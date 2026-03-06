@@ -1,0 +1,75 @@
+# ~/.openclaw/config.yaml
+# 複製此檔案到 SSH 553588 的 ~/.openclaw/config.yaml
+
+server:
+  port: 3000
+  bind: 127.0.0.1            # 只綁定 localhost，透過 SSH Tunnel 存取
+
+ai:
+  provider: anthropic
+  model: claude-sonnet-4-6
+  api_key: "${ANTHROPIC_API_KEY}"
+
+# ── 多智能體通訊設定 ──────────────────────────────
+sessions:
+  visibility: "all"           # 讓所有智能體看到彼此的 session
+
+agentToAgent:
+  enabled: true               # 開啟智能體間直接通訊（預設關閉，需明確啟用）
+  maxPingPongTurns: 5         # 最多 5 來回對話
+
+# ── 智能體清單 ────────────────────────────────────
+agents:
+  - id: orchestrator
+    name: 指揮官
+    workspace: ~/.openclaw/agents/orchestrator/workspace/
+    agentDir:  ~/.openclaw/agents/orchestrator/state/
+    tools:
+      allow: [sessions_send, sessions_spawn, sessions_list, memory_write, memory_read]
+
+  - id: site-analyst
+    name: 網站分析師
+    workspace: ~/.openclaw/agents/site-analyst/workspace/
+    agentDir:  ~/.openclaw/agents/site-analyst/state/
+    tools:
+      allow: [fetch_url, sessions_send, memory_write]
+
+  - id: auth-agent
+    name: 登入管家
+    workspace: ~/.openclaw/agents/auth-agent/workspace/
+    agentDir:  ~/.openclaw/agents/auth-agent/state/
+    tools:
+      allow: [browser_open, browser_click, browser_extract_text,
+              sessions_send, memory_write, shell_safe]
+
+  - id: book-fetcher
+    name: 書本搬運工
+    workspace: ~/.openclaw/agents/book-fetcher/workspace/
+    agentDir:  ~/.openclaw/agents/book-fetcher/state/
+    tools:
+      allow: [browser_open, browser_scroll, browser_extract_text,
+              fetch_url, write_file, memory_write, sessions_send]
+
+  - id: summarizer
+    name: 知識提煉師
+    workspace: ~/.openclaw/agents/summarizer/workspace/
+    agentDir:  ~/.openclaw/agents/summarizer/state/
+    tools:
+      allow: [read_file, write_file, memory_write, sessions_send]
+
+  - id: publisher
+    name: 網站發布師
+    workspace: ~/.openclaw/agents/publisher/workspace/
+    agentDir:  ~/.openclaw/agents/publisher/state/
+    tools:
+      allow: [read_file, write_file, shell_safe, memory_write, sessions_send]
+
+# ── 安全設定 ──────────────────────────────────────
+manual_approval:
+  - file_delete
+  - shell_exec_dangerous
+  - browser_oauth_authorize   # OAuth 授權前必須人工確認
+
+memory:
+  enabled: true
+  path: ~/.openclaw/memory/
