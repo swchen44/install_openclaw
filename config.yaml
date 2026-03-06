@@ -64,6 +64,17 @@ agents:
     tools:
       allow: [read_file, write_file, shell_safe, memory_write, sessions_send]
 
+# ── Telegram 控制介面 ─────────────────────────────
+channels:
+  telegram:
+    enabled: true
+    botToken: "${TELEGRAM_BOT_TOKEN}"    # BotFather 取得的 token
+    allowFrom:
+      - "${TELEGRAM_USER_ID}"            # 你的 Telegram 數字 ID
+    groupAllowFrom: []
+    chatTypes: ["private"]
+    # webhookUrl: "https://your-domain/telegram/webhook"  # 有 HTTPS 時啟用
+
 # ── 安全設定 ──────────────────────────────────────
 manual_approval:
   - file_delete
