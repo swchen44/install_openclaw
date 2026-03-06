@@ -12,6 +12,7 @@
 
 ## 目錄
 
+0. [AI Provider 策略](#0-ai-provider-策略)
 1. [多智能體通訊架構](#1-多智能體通訊架構)
 2. [config.yaml — 啟用 agentToAgent](#2-configyaml--啟用-agenttoagent)
 3. [六個智能體 + 各自 SOUL.md](#3-六個智能體--各自-soulmd)
@@ -25,6 +26,66 @@
 5. [Kobo OAuth 登入策略](#5-kobo-oauth-登入策略)
 6. [資料夾結構](#6-資料夾結構)
 7. [執行里程碑](#7-執行里程碑)
+
+---
+
+## 0. AI Provider 策略
+
+### 現階段：Anthropic Option B（Claude 訂閱 setup-token）
+
+> 參考：[docs.openclaw.ai/providers/anthropic](https://docs.openclaw.ai/providers/anthropic)
+
+**Option B** 使用 Claude 訂閱額度，**不需要** `ANTHROPIC_API_KEY`，
+改用 `claude setup-token` 綁定訂閱。
+
+```bash
+# ① 在本機（有 Claude Code CLI）產生 token
+claude setup-token
+
+# ② 在 SSH 553588 上完成認證
+openclaw models auth setup-token --provider anthropic
+# 貼上 token 並按 Enter
+
+# 若在不同機器上，先複製 token 再貼入：
+openclaw models auth paste-token --provider anthropic
+```
+
+`config.yaml` 設定（無需 API key）：
+
+```yaml
+agents:
+  defaults:
+    model:
+      primary: "anthropic/claude-opus-4-6"
+```
+
+> ⚠️ setup-token 可能過期，若遇到 OAuth 錯誤，重新執行步驟 ① ② 即可。
+
+---
+
+### 未來：切換至 MiniMax M2.5（成本最佳化）
+
+> 參考：[docs.openclaw.ai/providers/minimax](https://docs.openclaw.ai/providers/minimax)
+
+當 Claude 訂閱不足或需要大量批次處理時，切換至 MiniMax。
+
+| 比較項目 | Anthropic Claude Opus 4.6 | MiniMax M2.5 |
+|---------|--------------------------|--------------|
+| 計費方式 | 訂閱（Option B） | $0.30 input / $1.20 output / 1M token |
+| Context Window | 200K | **200K** |
+| Max Output | 32K | 8,192 |
+| 適用場景 | 開發/測試期 | 大量書本批次處理 |
+
+切換方式（`config.yaml` 取消註解 MiniMax 區塊 + 設定 API key）：
+
+```bash
+# 設定環境變數
+export MINIMAX_API_KEY="sk-..."
+
+# 或使用 OpenClaw 互動式設定
+openclaw configure
+# 選 Model/auth → MiniMax M2.5
+```
 
 ---
 

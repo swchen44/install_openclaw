@@ -5,10 +5,50 @@ server:
   port: 3000
   bind: 127.0.0.1            # 只綁定 localhost，透過 SSH Tunnel 存取
 
-ai:
-  provider: anthropic
-  model: claude-sonnet-4-6
-  api_key: "${ANTHROPIC_API_KEY}"
+# ── AI 模型設定 ───────────────────────────────────
+# 現階段：Anthropic Option B（Claude 訂閱 setup-token，非 API Key）
+# 參考：https://docs.openclaw.ai/providers/anthropic
+#
+# 安裝步驟（在本機執行）：
+#   1. claude setup-token
+#   2. openclaw models auth setup-token --provider anthropic
+#      （或跨機器：openclaw models auth paste-token --provider anthropic）
+#
+# 優點：使用 Claude 訂閱額度，無需 ANTHROPIC_API_KEY
+# 注意：token 可能過期，需重新執行 claude setup-token 並重新 auth
+
+agents:
+  defaults:
+    model:
+      primary: "anthropic/claude-opus-4-6"   # Option B：綁定訂閱，非 API key
+
+# ── 未來：切換至 MiniMax（成本最佳化）───────────────
+# 參考：https://docs.openclaw.ai/providers/minimax
+# 當 Claude 訂閱額度不足或需要降低成本時啟用
+# 啟用方式：將下方區塊取消註解，並設定 MINIMAX_API_KEY 環境變數
+#
+# env:
+#   MINIMAX_API_KEY: "sk-..."
+#
+# agents:
+#   defaults:
+#     model:
+#       primary: "minimax/MiniMax-M2.5"
+#
+# models:
+#   mode: merge
+#   providers:
+#     minimax:
+#       baseUrl: "https://api.minimax.io/anthropic"   # 中國用戶改 api.minimaxi.com
+#       apiKey: "${MINIMAX_API_KEY}"
+#       api: "anthropic-messages"
+#       models:
+#         - id: MiniMax-M2.5
+#           contextWindow: 200000   # 200K context（遠大於 Claude Sonnet）
+#           maxTokens: 8192
+#           cost:
+#             input: 0.30           # $0.30 / 1M tokens
+#             output: 1.20          # $1.20 / 1M tokens
 
 # ── 多智能體通訊設定 ──────────────────────────────
 sessions:
