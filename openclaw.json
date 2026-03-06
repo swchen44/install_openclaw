@@ -1,0 +1,80 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.3.2",
+    "lastTouchedAt": "2026-03-06T21:25:06.748Z"
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "anthropic/claude-opus-4-6"
+      },
+      "memorySearch": {
+        "enabled": false
+      }
+    },
+    "list": [
+      {
+        "id": "orchestrator",
+        "name": "指揮官",
+        "workspace": "/home/ubuntu/.openclaw/agents/orchestrator/workspace",
+        "agentDir": "/home/ubuntu/.openclaw/agents/orchestrator/state"
+      },
+      {
+        "id": "site-analyst",
+        "name": "網站分析師",
+        "workspace": "/home/ubuntu/.openclaw/agents/site-analyst/workspace",
+        "agentDir": "/home/ubuntu/.openclaw/agents/site-analyst/state"
+      },
+      {
+        "id": "auth-agent",
+        "name": "登入管家",
+        "workspace": "/home/ubuntu/.openclaw/agents/auth-agent/workspace",
+        "agentDir": "/home/ubuntu/.openclaw/agents/auth-agent/state"
+      },
+      {
+        "id": "book-fetcher",
+        "name": "書本搬運工",
+        "workspace": "/home/ubuntu/.openclaw/agents/book-fetcher/workspace",
+        "agentDir": "/home/ubuntu/.openclaw/agents/book-fetcher/state"
+      },
+      {
+        "id": "summarizer",
+        "name": "知識提煉師",
+        "workspace": "/home/ubuntu/.openclaw/agents/summarizer/workspace",
+        "agentDir": "/home/ubuntu/.openclaw/agents/summarizer/state"
+      },
+      {
+        "id": "publisher",
+        "name": "網站發布師",
+        "workspace": "/home/ubuntu/.openclaw/agents/publisher/workspace",
+        "agentDir": "/home/ubuntu/.openclaw/agents/publisher/state"
+      }
+    ]
+  },
+  "tools": {
+    "agentToAgent": {
+      "enabled": true,
+      "allow": [
+        "orchestrator",
+        "site-analyst",
+        "auth-agent",
+        "book-fetcher",
+        "summarizer",
+        "publisher"
+      ]
+    }
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "gateway": {
+    "mode": "local",
+    "auth": {
+      "mode": "token",
+      "token": "faa6a106d21d9ba231c05a9b023c4ce77197d493a48e76c7"
+    }
+  }
+}
